@@ -190,3 +190,15 @@ func TestExpandLevel3FormStyleQueryContinuation(t *testing.T) {
 		assert.Equal(t, v.b, exp)
 	}
 }
+
+func TextExpandMultipleExpressions(t *testing.T) {
+	for _, v := range []compare{
+		{"/a{/var,x}/here?fixed=yes{&x}{&y}", "/a/value/1024/here?fixed=yes&x=1024&y=768"},
+	} {
+		exp, err := v.a.Expand(vars)
+		if err != nil {
+			t.Fatal(err)
+		}
+		assert.Equal(t, v.b, exp)
+	}
+}
