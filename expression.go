@@ -39,6 +39,10 @@ func (e Expression) Expand(vars ...Variables) string {
 		}
 	}
 
+	if len(a) == 0 {
+		return ""
+	}
+
 	return e.Operator.Join(a)
 }
 

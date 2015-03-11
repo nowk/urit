@@ -158,3 +158,10 @@ func TextExpandMultipleExpressions(t *testing.T) {
 		assert.Equal(t, v.b, v.a.Expand(vars))
 	}
 }
+
+func TestExpandDoesNotExpandForVariablesNotIncluded(t *testing.T) {
+	u := URI("{/var,x}/here{?x,y}").Expand(Variables{
+		"var": "/foo/bar",
+	})
+	assert.Equal(t, URI("/foo/bar/here"), u)
+}
