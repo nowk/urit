@@ -29,16 +29,15 @@ func (e Expression) Expand(vars ...Variables) (string, error) {
 
 			switch e.Operator {
 			case ";", "?", "&":
-				f := "%s=%s"
+				frmt := "%s=%s"
 				if val == "" && e.Operator == ";" {
-					f = "%s%s"
+					frmt = "%s%s"
 				}
 
-				a = append(a, fmt.Sprintf(f, k, val))
-
-			default:
-				a = append(a, val)
+				val = fmt.Sprintf(frmt, k, val)
 			}
+
+			a = append(a, val)
 		}
 	}
 
