@@ -21,7 +21,11 @@ func TestSplit(t *testing.T) {
 		{
 			"{+x,hello,y}",
 			"+",
-			"x,hello,y",
+			[]string{
+				"x",
+				"hello",
+				"y",
+			},
 		},
 	}, a)
 }

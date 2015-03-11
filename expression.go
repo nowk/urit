@@ -12,15 +12,13 @@ type Expression struct {
 	Match string
 
 	Operator      Operator
-	VariableNames string
+	VariableNames []string
 }
 
 func (e Expression) Expand(vars ...Variables) (string, error) {
-	s := strings.Split(e.VariableNames, ",")
-
 	var a []string
 
-	for _, k := range s {
+	for _, k := range e.VariableNames {
 		for _, v := range vars {
 			val, ok := v[k]
 			if !ok {
@@ -55,7 +53,7 @@ func Split(u URI) []*Expression {
 		e = append(e, &Expression{
 			Match:         v[1],
 			Operator:      Operator(v[2]),
-			VariableNames: v[3],
+			VariableNames: strings.Split(v[3], ","),
 		})
 	}
 
