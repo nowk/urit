@@ -54,11 +54,7 @@ func TestExpandLevel1SimpleStringExpansion(t *testing.T) {
 		{"{var}", "value"},
 		{"{hello}", "Hello World!"},
 	} {
-		exp, err := v.a.Expand(vars)
-		if err != nil {
-			t.Fatal(err)
-		}
-		assert.Equal(t, v.b, exp)
+		assert.Equal(t, v.b, v.a.Expand(vars))
 	}
 }
 
@@ -69,11 +65,7 @@ func TestExpandLevel2ReservedExpansion(t *testing.T) {
 		{"{+path}/here", "/foo/bar/here"},
 		{"here?ref={+path}", "here?ref=/foo/bar"},
 	} {
-		exp, err := v.a.Expand(vars)
-		if err != nil {
-			t.Fatal(err)
-		}
-		assert.Equal(t, v.b, exp)
+		assert.Equal(t, v.b, v.a.Expand(vars))
 	}
 }
 
@@ -82,11 +74,7 @@ func TestExpandLevel2FragmentExpansion(t *testing.T) {
 		{"X{#var}", "X#value"},
 		{"X{#hello}", "X#Hello World!"},
 	} {
-		exp, err := v.a.Expand(vars)
-		if err != nil {
-			t.Fatal(err)
-		}
-		assert.Equal(t, v.b, exp)
+		assert.Equal(t, v.b, v.a.Expand(vars))
 	}
 }
 
@@ -95,11 +83,7 @@ func TestExpandLevel3StringExpansion(t *testing.T) {
 		{"map?{x,y}", "map?1024,768"},
 		{"{x,hello,y}", "1024,Hello World!,768"},
 	} {
-		exp, err := v.a.Expand(vars)
-		if err != nil {
-			t.Fatal(err)
-		}
-		assert.Equal(t, v.b, exp)
+		assert.Equal(t, v.b, v.a.Expand(vars))
 	}
 }
 
@@ -108,11 +92,7 @@ func TestExpandLevel3ReservedExpansion(t *testing.T) {
 		{"{+x,hello,y}", "1024,Hello World!,768"},
 		{"{+path,x}/here", "/foo/bar,1024/here"},
 	} {
-		exp, err := v.a.Expand(vars)
-		if err != nil {
-			t.Fatal(err)
-		}
-		assert.Equal(t, v.b, exp)
+		assert.Equal(t, v.b, v.a.Expand(vars))
 	}
 }
 
@@ -121,11 +101,7 @@ func TestExpandLevel3FragmentExpansion(t *testing.T) {
 		{"{#x,hello,y}", "#1024,Hello World!,768"},
 		{"{#path,x}/here", "#/foo/bar,1024/here"},
 	} {
-		exp, err := v.a.Expand(vars)
-		if err != nil {
-			t.Fatal(err)
-		}
-		assert.Equal(t, v.b, exp)
+		assert.Equal(t, v.b, v.a.Expand(vars))
 	}
 }
 
@@ -135,11 +111,7 @@ func TextExpandLevel3LabelExpansion(t *testing.T) {
 		{"X{.x,y}", "X.1024.768"},
 		{},
 	} {
-		exp, err := v.a.Expand(vars)
-		if err != nil {
-			t.Fatal(err)
-		}
-		assert.Equal(t, v.b, exp)
+		assert.Equal(t, v.b, v.a.Expand(vars))
 	}
 }
 
@@ -148,11 +120,7 @@ func TestExpandLevel3PathSegments(t *testing.T) {
 		{"{/var}", "/value"},
 		{"{/var,x}/here", "/value/1024/here"},
 	} {
-		exp, err := v.a.Expand(vars)
-		if err != nil {
-			t.Fatal(err)
-		}
-		assert.Equal(t, v.b, exp)
+		assert.Equal(t, v.b, v.a.Expand(vars))
 	}
 }
 
@@ -161,11 +129,7 @@ func TestExpandLevel3PathStyleParameters(t *testing.T) {
 		{"{;x,y}", ";x=1024;y=768"},
 		{"{;x,y,empty}", ";x=1024;y=768;empty"},
 	} {
-		exp, err := v.a.Expand(vars)
-		if err != nil {
-			t.Fatal(err)
-		}
-		assert.Equal(t, v.b, exp)
+		assert.Equal(t, v.b, v.a.Expand(vars))
 	}
 }
 
@@ -174,11 +138,7 @@ func TestExpandLevel3FormStyleQuery(t *testing.T) {
 		{"{?x,y}", "?x=1024&y=768"},
 		{"{?x,y,empty}", "?x=1024&y=768&empty="},
 	} {
-		exp, err := v.a.Expand(vars)
-		if err != nil {
-			t.Fatal(err)
-		}
-		assert.Equal(t, v.b, exp)
+		assert.Equal(t, v.b, v.a.Expand(vars))
 	}
 }
 
@@ -187,11 +147,7 @@ func TestExpandLevel3FormStyleQueryContinuation(t *testing.T) {
 		{"?fixed=yes{&x}", "?fixed=yes&x=1024"},
 		{"{&x,y,empty}", "&x=1024&y=768&empty="},
 	} {
-		exp, err := v.a.Expand(vars)
-		if err != nil {
-			t.Fatal(err)
-		}
-		assert.Equal(t, v.b, exp)
+		assert.Equal(t, v.b, v.a.Expand(vars))
 	}
 }
 
@@ -199,10 +155,6 @@ func TextExpandMultipleExpressions(t *testing.T) {
 	for _, v := range []compare{
 		{"/a{/var,x}/here?fixed=yes{&x}{&y}", "/a/value/1024/here?fixed=yes&x=1024&y=768"},
 	} {
-		exp, err := v.a.Expand(vars)
-		if err != nil {
-			t.Fatal(err)
-		}
-		assert.Equal(t, v.b, exp)
+		assert.Equal(t, v.b, v.a.Expand(vars))
 	}
 }

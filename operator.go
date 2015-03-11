@@ -22,7 +22,7 @@ var opmap = map[Operator][]string{
 }
 
 // Join joins an array of strings based on the format of the given operator
-func (o Operator) Join(a []string) (string, error) {
+func (o Operator) Join(a []string) string {
 	var s string
 
 	switch o {
@@ -37,5 +37,5 @@ func (o Operator) Join(a []string) (string, error) {
 		s = strings.Join(a, ",")
 	}
 
-	return s, nil
+	return s
 }

@@ -15,7 +15,7 @@ type Expression struct {
 	VariableList []string
 }
 
-func (e Expression) Expand(vars ...Variables) (string, error) {
+func (e Expression) Expand(vars ...Variables) string {
 	var a []string
 
 	for _, k := range e.VariableList {

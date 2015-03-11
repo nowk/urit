@@ -10,13 +10,12 @@ type (
 	Variables map[string]string
 )
 
-func (u URI) Expand(vars ...Variables) (URI, error) {
+func (u URI) Expand(vars ...Variables) URI {
 	s := string(u)
 
 	for _, v := range Split(u) {
-		str, _ := v.Expand(vars...)
-		s = strings.Replace(s, v.Match, str, -1)
+		s = strings.Replace(s, v.Match, v.Expand(vars...), -1)
 	}
 
-	return URI(s), nil
+	return URI(s)
 }
