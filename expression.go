@@ -11,14 +11,14 @@ var experreg = regexp.MustCompile(`({([+#.\/;?&])?([a-z,]+)})`)
 type Expression struct {
 	Match string
 
-	Operator      Operator
-	VariableNames []string
+	Operator     Operator
+	VariableList []string
 }
 
 func (e Expression) Expand(vars ...Variables) (string, error) {
 	var a []string
 
-	for _, k := range e.VariableNames {
+	for _, k := range e.VariableList {
 		for _, v := range vars {
 			val, ok := v[k]
 			if !ok {
@@ -51,9 +51,9 @@ func Split(u URI) []*Expression {
 	var e []*Expression
 	for _, v := range m {
 		e = append(e, &Expression{
-			Match:         v[1],
-			Operator:      Operator(v[2]),
-			VariableNames: strings.Split(v[3], ","),
+			Match:        v[1],
+			Operator:     Operator(v[2]),
+			VariableList: strings.Split(v[3], ","),
 		})
 	}
 
