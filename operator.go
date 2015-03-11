@@ -7,16 +7,21 @@ import (
 
 type Operator string
 
-// Operator : [Prefix, Joiner]
+// opmap => Operator: [Prefix, Joiner]
 var opmap = map[Operator][]string{
-	"/": {"/", "/"},
+	// op-level2
+	"+": {"", ","},
 	"#": {"#", ","},
+
+	// op-level3
+	".": {".", "."},
+	"/": {"/", "/"},
+	";": {";", ";"},
 	"?": {"?", "&"},
 	"&": {"&", "&"},
-	";": {";", ";"},
-	".": {".", "."},
 }
 
+// Join joins an array of strings based on the format of the given operator
 func (o Operator) Join(a []string) (string, error) {
 	var s string
 
@@ -28,7 +33,7 @@ func (o Operator) Join(a []string) (string, error) {
 		m := opmap[o]
 		s = m[0] + strings.Join(a, m[1])
 
-	default:
+	default: // handles +, `{+var}` and blank, `{var}`
 		s = strings.Join(a, ",")
 	}
 
