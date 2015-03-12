@@ -15,34 +15,6 @@ var vars = Variables{
 	"y":     "768",
 }
 
-func TestSplit(t *testing.T) {
-	a := Split("{+x,hello,y}")
-	assert.Equal(t, []*Expression{
-		{
-			"{+x,hello,y}",
-			"+",
-			[]string{
-				"x",
-				"hello",
-				"y",
-			},
-		},
-	}, a)
-}
-
-func TestSplitReturnsNilOnNonMatch(t *testing.T) {
-	for _, v := range []string{
-		"",
-		"+x,hello,y",
-		"{}",
-		"{+x,hello,y",
-		"+x,hello,y}",
-	} {
-		a := Split(URI(v))
-		assert.Nil(t, a)
-	}
-}
-
 // Tests based on http://tools.ietf.org/html/rfc6570
 
 type compare struct {
@@ -151,17 +123,24 @@ func TestExpandLevel3FormStyleQueryContinuation(t *testing.T) {
 	}
 }
 
-func TextExpandMultipleExpressions(t *testing.T) {
-	for _, v := range []compare{
-		{"/a{/var,x}/here?fixed=yes{&x}{&y}", "/a/value/1024/here?fixed=yes&x=1024&y=768"},
-	} {
-		assert.Equal(t, v.b, v.a.Expand(vars))
-	}
-}
-
-func TestExpandDoesNotExpandForVariablesNotIncluded(t *testing.T) {
+func TestExpandDoesNotExpandIfNoVariableValue(t *testing.T) {
 	u := URI("{/var,x}/here{?x,y}").Expand(Variables{
 		"var": "/foo/bar",
+		"y":   "768",
 	})
-	assert.Equal(t, URI("/foo/bar/here"), u)
+	assert.Equal(t, URI("/foo/bar/here?y=768"), u)
+}
+
+func TestInspectAllowsForContinuousReexpanding(t *testing.T) {
+	u := URI("{/var,x}/here{?x,y}").Inspect(Variables{
+		"var": "/foo/bar",
+	})
+	assert.Equal(t, URI("/foo/bar{/x}/here?{&x,y}"), u)
+
+	u = u.Inspect(Variables{
+		"x": "1024",
+		"y": "768",
+	})
+	assert.Equal(t, URI("/foo/bar/1024/here?&x=1024&y=768"), u)
+	assert.Equal(t, URI("/foo/bar/1024/here?&x=1024&y=768"), u.Expand(nil))
 }
