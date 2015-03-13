@@ -144,3 +144,17 @@ func TestInspectAllowsForContinuousReexpanding(t *testing.T) {
 	assert.Equal(t, URI("/foo/bar/1024/here?&x=1024&y=768"), u)
 	assert.Equal(t, URI("/foo/bar/1024/here?&x=1024&y=768"), u.Expand(nil))
 }
+
+func TestFixMultipleInspectCausesDoubleAmperOnQueryExpand(t *testing.T) {
+	var u URI = "/users{/username}/repos{?type,sort,direction}"
+
+	u = u.Inspect(Variables{
+		"username": "nowk",
+	})
+
+	u = u.Inspect(Variables{
+		"sort": "created",
+	})
+
+	assert.Equal(t, URI("/users/nowk/repos?&sort=created"), u.Expand(nil))
+}

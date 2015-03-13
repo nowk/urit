@@ -52,6 +52,11 @@ func (o Operator) Join(a []string) string {
 		s = strings.Join(a, ",")
 	}
 
+	// TODO revisit, not particularly pretty
+	if s[:2] == "&{" {
+		s = s[1:] // remove extra &
+	}
+
 	return s
 }
 
