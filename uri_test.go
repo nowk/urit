@@ -158,3 +158,21 @@ func TestFixMultipleInspectCausesDoubleAmperOnQueryExpand(t *testing.T) {
 
 	assert.Equal(t, URI("/users/nowk/repos?&sort=created"), u.Expand(nil))
 }
+
+func TestDoesNotMutateOriginalURI(t *testing.T) {
+	{
+		var u URI = "{/var,x}"
+		_ = u.Expand(Variables{
+			"var": "value",
+		})
+		assert.Equal(t, URI("{/var,x}"), u)
+	}
+
+	{
+		var u URI = "{/var,x}"
+		_ = u.Inspect(Variables{
+			"var": "value",
+		})
+		assert.Equal(t, URI("{/var,x}"), u)
+	}
+}
