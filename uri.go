@@ -4,11 +4,9 @@ import (
 	"strings"
 )
 
-type (
-	URI string
+type Variables map[string]string
 
-	Variables map[string]string
-)
+type URI string
 
 // Expand expands a uri removing any non-supplied variables
 func (u URI) Expand(v Variables) URI {
