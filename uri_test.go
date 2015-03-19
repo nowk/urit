@@ -24,7 +24,7 @@ type compare struct {
 func TestExpandLevel1SimpleStringExpansion(t *testing.T) {
 	for _, v := range []compare{
 		{"{var}", "value"},
-		{"{hello}", "Hello World!"},
+		{"{hello}", "Hello%20World%21"},
 	} {
 		assert.Equal(t, v.b, v.a.Expand(vars))
 	}
@@ -33,7 +33,7 @@ func TestExpandLevel1SimpleStringExpansion(t *testing.T) {
 func TestExpandLevel2ReservedExpansion(t *testing.T) {
 	for _, v := range []compare{
 		{"{+var}", "value"},
-		{"{+hello}", "Hello World!"},
+		{"{+hello}", "Hello%20World%21"},
 		{"{+path}/here", "/foo/bar/here"},
 		{"here?ref={+path}", "here?ref=/foo/bar"},
 	} {
@@ -44,7 +44,7 @@ func TestExpandLevel2ReservedExpansion(t *testing.T) {
 func TestExpandLevel2FragmentExpansion(t *testing.T) {
 	for _, v := range []compare{
 		{"X{#var}", "X#value"},
-		{"X{#hello}", "X#Hello World!"},
+		{"X{#hello}", "X#Hello%20World%21"},
 	} {
 		assert.Equal(t, v.b, v.a.Expand(vars))
 	}
@@ -53,7 +53,7 @@ func TestExpandLevel2FragmentExpansion(t *testing.T) {
 func TestExpandLevel3StringExpansion(t *testing.T) {
 	for _, v := range []compare{
 		{"map?{x,y}", "map?1024,768"},
-		{"{x,hello,y}", "1024,Hello World!,768"},
+		{"{x,hello,y}", "1024,Hello%20World%21,768"},
 	} {
 		assert.Equal(t, v.b, v.a.Expand(vars))
 	}
@@ -61,7 +61,7 @@ func TestExpandLevel3StringExpansion(t *testing.T) {
 
 func TestExpandLevel3ReservedExpansion(t *testing.T) {
 	for _, v := range []compare{
-		{"{+x,hello,y}", "1024,Hello World!,768"},
+		{"{+x,hello,y}", "1024,Hello%20World%21,768"},
 		{"{+path,x}/here", "/foo/bar,1024/here"},
 	} {
 		assert.Equal(t, v.b, v.a.Expand(vars))
@@ -70,7 +70,7 @@ func TestExpandLevel3ReservedExpansion(t *testing.T) {
 
 func TestExpandLevel3FragmentExpansion(t *testing.T) {
 	for _, v := range []compare{
-		{"{#x,hello,y}", "#1024,Hello World!,768"},
+		{"{#x,hello,y}", "#1024,Hello%20World%21,768"},
 		{"{#path,x}/here", "#/foo/bar,1024/here"},
 	} {
 		assert.Equal(t, v.b, v.a.Expand(vars))

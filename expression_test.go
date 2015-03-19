@@ -105,3 +105,26 @@ func TestInspectionUnexpandedHash(t *testing.T) {
 		assert.Equal(t, v.s, e.Expand(false, v.v))
 	}
 }
+
+func TestEscapesValues(t *testing.T) {
+	e := Expression{
+		VariableList: []string{
+			"var",
+			"path",
+		},
+	}
+
+	for _, v := range []struct {
+		op Operator
+		u  string
+	}{
+		{"?", "?var=Hello%20World%21&path=/some/path/with%20space"},
+		{"/", "/Hello%20World%21/some/path/with%20space"},
+	} {
+		e.Operator = v.op
+		assert.Equal(t, v.u, e.Expand(true, Variables{
+			"var":  "Hello World!",
+			"path": "/some/path/with space",
+		}))
+	}
+}

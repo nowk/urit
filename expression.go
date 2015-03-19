@@ -2,6 +2,7 @@ package urit
 
 import (
 	"fmt"
+	"net/url"
 	"regexp"
 	"strings"
 )
@@ -57,6 +58,9 @@ func (e Expression) Expand(d bool, v Variables) string {
 
 			continue
 		}
+
+		// escape through String() to ensure spaces come out as %20 and not +
+		val = (&url.URL{Path: val}).String()
 
 		switch op {
 		case ";", "?", "&":
