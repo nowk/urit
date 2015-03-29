@@ -14,7 +14,7 @@ type Expression struct {
 	VariableList []string
 }
 
-var experreg = regexp.MustCompile(`({([+#.\/;?&,])?([a-z,]+)})`)
+var experreg = regexp.MustCompile(`({([+#.\/;?&,])?([a-z_,]+)})`)
 
 func Split(u URI) []*Expression {
 	m := experreg.FindAllStringSubmatch(string(u), -1)

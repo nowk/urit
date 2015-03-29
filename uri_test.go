@@ -176,3 +176,10 @@ func TestDoesNotMutateOriginalURI(t *testing.T) {
 		assert.Equal(t, URI("{/var,x}"), u)
 	}
 }
+
+func TestExpressionKeysCanContainUnderscores(t *testing.T) {
+	vars := Variables{
+		"client_id": "a",
+	}
+	assert.Equal(t, URI("/a"), URI("{/client_id}").Expand(vars))
+}
