@@ -20,6 +20,10 @@ func (u URI) Inspect(v Variables) URI {
 	return u.expand(false, v)
 }
 
+func (u URI) String(v Variables) string {
+	return string(u.Expand(v))
+}
+
 // expand splits a URI into it's multiple expression pieces and expands each one
 // then replacing them back in the original uri string
 func (u URI) expand(d bool, v Variables) URI {

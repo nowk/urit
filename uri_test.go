@@ -183,3 +183,27 @@ func TestExpressionKeysCanContainUnderscores(t *testing.T) {
 	}
 	assert.Equal(t, URI("/a"), URI("{/client_id}").Expand(vars))
 }
+
+func TestStringReturnsExpandedString(t *testing.T) {
+	{
+		vars := Variables{
+			"var": "value",
+		}
+		assert.Equal(t, "/value", URI("{/var}").String(vars))
+	}
+
+	{
+		vars := Variables{
+			"var": "value",
+			"x":   "1024",
+		}
+		assert.Equal(t, "/value/1024", URI("{/var,x}").String(vars))
+	}
+
+	{
+		vars := Variables{
+			"var": "value",
+		}
+		assert.Equal(t, "/value", URI("{/var,x}").String(vars))
+	}
+}
