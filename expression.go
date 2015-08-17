@@ -17,27 +17,28 @@ type Expression struct {
 var experreg = regexp.MustCompile(`({([+#.\/;?&,])?([a-z_,]+)})`)
 
 func Split(u URI) []*Expression {
-	m := experreg.FindAllStringSubmatch(string(u), -1)
-	if len(m) == 0 {
+	matches := experreg.FindAllStringSubmatch(string(u), -1)
+	if len(matches) == 0 {
 		return nil
 	}
 
-	var e []*Expression
-	for _, v := range m {
-		e = append(e, &Expression{
+	var exprs []*Expression
+	for _, v := range matches {
+		exprs = append(exprs, &Expression{
 			Match:        v[1],
 			Operator:     Operator(v[2]),
 			VariableList: strings.Split(v[3], ","),
 		})
 	}
 
-	return e
+	return exprs
 }
 
-// Expand expands an expression given the variables
-func (e Expression) Expand(d bool, v Variables) string {
-	var a []string
-	var s []string // skipped variables
+// Expand expands an expression given the variables. if pact is false the string
+// will be returned with the unexpaned variable expressions.
+func (e Expression) Expand(pact bool, vars Variables) string {
+	var arr []string
+	var skp []string // skipped variables
 
 	op := e.Operator
 
@@ -49,11 +50,11 @@ func (e Expression) Expand(d bool, v Variables) string {
 		op = ","
 	}
 
-	for _, k := range e.VariableList {
-		val, ok := v[k]
+	for _, v := range e.VariableList {
+		val, ok := vars[v]
 		if !ok {
-			if !d {
-				s = append(s, k)
+			if !pact {
+				skp = append(skp, v)
 			}
 
 			continue
@@ -69,27 +70,27 @@ func (e Expression) Expand(d bool, v Variables) string {
 				frmt = "%s%s"
 			}
 
-			val = fmt.Sprintf(frmt, k, val)
+			val = fmt.Sprintf(frmt, v, val)
 		}
 
 		// insert remaning unexpanded variables as expression
-		if len(s) > 0 {
-			a = append(a, op.NewExpression(s))
-			s = nil
+		if len(skp) > 0 {
+			arr = append(arr, op.NewExpression(skp))
+			skp = nil
 		}
 
-		a = append(a, val)
+		arr = append(arr, val)
 	}
 
 	// insert remaning unexpanded variables as expression
-	if len(s) > 0 {
-		a = append(a, op.NewExpression(s))
+	if len(skp) > 0 {
+		arr = append(arr, op.NewExpression(skp))
 	}
 
-	if len(a) == 0 {
+	if len(arr) == 0 {
 		return ""
 	}
 
 	// final combine is done using the original Operator of the expression
-	return e.Operator.Join(a)
+	return e.Operator.Join(arr)
 }

@@ -27,47 +27,47 @@ var opmap = map[Operator][]string{
 }
 
 // Join joins an array of strings based on the format of the given operator
-func (o Operator) Join(a []string) string {
-	var s string
+func (o Operator) Join(arr []string) string {
+	var str string
 
 	switch o {
 	case "/":
-		for i, v := range a {
+		for i, v := range arr {
 			if v[:1] != "{" {
-				a[i] = "/" + v
+				arr[i] = "/" + v
 			}
 		}
-		s = filepath.Join(strings.Join(a, ""))
+		str = filepath.Join(strings.Join(arr, ""))
 
 	case "#", "?", ".", ";", "&":
 		m := opmap[o]
-		for i, v := range a {
+		for i, v := range arr {
 			if i > 0 && v[:1] != "{" {
-				a[i] = m[1] + v
+				arr[i] = m[1] + v
 			}
 		}
-		s = m[0] + strings.Join(a, "")
+		str = m[0] + strings.Join(arr, "")
 
 		// TODO revisit, not particularly pretty
-		if s[:2] == "&{" {
-			s = s[1:] // remove extra &
+		if str[:2] == "&{" {
+			str = str[1:] // remove extra &
 		}
 
 	default: // handles +, `{+var}` and blank, `{var}`
-		s = strings.Join(a, ",")
+		str = strings.Join(arr, ",")
 	}
 
-	return s
+	return str
 }
 
 // left and right expression delimiters { }
 const (
-	dl = "{"
-	dr = "}"
+	delimL = "{"
+	delimR = "}"
 )
 
-func (o Operator) NewExpression(a []string) string {
-	if len(a) == 0 {
+func (o Operator) NewExpression(arr []string) string {
+	if len(arr) == 0 {
 		return ""
 	}
 
@@ -76,5 +76,5 @@ func (o Operator) NewExpression(a []string) string {
 		m = []string{"", ","}
 	}
 
-	return fmt.Sprintf("%s%s%s%s", dl, m[0], strings.Join(a, ","), dr)
+	return fmt.Sprintf("%s%s%s%s", delimL, m[0], strings.Join(arr, ","), delimR)
 }
